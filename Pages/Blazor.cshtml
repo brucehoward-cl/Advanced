@@ -1,0 +1,39 @@
+﻿@page "/pages/blazor"
+<!--<h4 class="bg-primary text-white text-center p-2">Events</h4>-->
+<!--<component type="typeof(Advanced.Blazor.Events)" render-mode="Server" />--> <!--This uses the Events.razor component -->
+<!--<component type="typeof(Advanced.Blazor.Bindings)" render-mode="Server" />--> <!--This uses the Bindings.razor component -->
+<!--<h4 class="bg-primary text-white text-center p-2">Code-Behind</h4>
+<component type="typeof(Advanced.Blazor.Split)" render-mode="Server" />-->
+ <!--Uses the split component that has a code behind file-->
+
+
+<h4 class="bg-primary text-white text-center p-2">Class Only</h4>
+<component type="typeof(Advanced.Blazor.CodeOnly)" render-mode="Server" /> <!--Uses the razor component completely defined in a code-behind file -->
+
+
+
+
+
+
+
+
+
+<!-- This code commented out to demonstrate the Events blazor component-->
+@*@page "/pages/blazor"
+    <script type="text/javascript">
+        window.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("markElems").addEventListener("click", () => {
+                document.querySelectorAll("td:first-child")
+                    .forEach(elem => {
+                        elem.innerText = `M:${elem.innerText}`
+                        elem.classList.add("border", "border-dark");
+                });
+            });
+        });
+    </script>
+
+    <h4 class="bg-primary text-white text-center p-2">Blazor People</h4>
+
+    <button id="markElems" class="btn btn-outline-primary mb-2">Mark Elements</button>
+
+    <component type="typeof(Advanced.Blazor.PeopleList)" render-mode="Server" />*@  <!--Note that the type attribute describes the particular blazor component-->
