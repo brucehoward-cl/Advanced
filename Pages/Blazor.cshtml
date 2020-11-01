@@ -4,20 +4,42 @@
 <!--<component type="typeof(Advanced.Blazor.Bindings)" render-mode="Server" />--> <!--This uses the Bindings.razor component -->
 <!--<h4 class="bg-primary text-white text-center p-2">Code-Behind</h4>
 <component type="typeof(Advanced.Blazor.Split)" render-mode="Server" />-->
- <!--Uses the split component that has a code behind file-->
+<!--Uses the split component that has a code behind file-->
+@*<h4 class="bg-primary text-white text-center p-2">Class Only</h4>
+    <component type="typeof(Advanced.Blazor.CodeOnly)" render-mode="Server" /> <!--Uses the razor component completely defined in a code-behind file -->*@
+
+<h4 class="bg-primary text-white text-center p-2">Departments</h4>
+
+<link rel="stylesheet" href="connectionErrors.css" /><!--To provide Error Handling-->
+<div id="components-reconnect-modal" class="h4 bg-dark text-white text-center my-2 p-2 components-reconnect-hide">
+    <!--To provide Error Handling-->
+    Blazor Connection Lost
+    <div class="reconnect">
+        Trying to reconnect...
+    </div>
+    <div class="failed">
+        Reconnection Failed.
+        <button class="btn btn-light" onclick="window.Blazor.reconnect()">
+            Reconnect
+        </button>
+    </div>
+    <div class="rejected">
+        Reconnection Rejected.
+        <button class="btn btn-light" onclick="location.reload()">
+            Reload
+        </button>
+    </div>
+</div> <!--To provide Error Handling-->
 
 
-<h4 class="bg-primary text-white text-center p-2">Class Only</h4>
-<component type="typeof(Advanced.Blazor.CodeOnly)" render-mode="Server" /> <!--Uses the razor component completely defined in a code-behind file -->
+<div id="blazor-error-ui" class="text-center bg-danger h6 text-white p-2 fixed-top w-100" style="display:none">
+    An error has occurred. This application will not respond until reloaded.
+    <button class="btn btn-sm btn-primary" onclick="location.reload()">Reload</button>
+</div>
 
 
 
-
-
-
-
-
-
+<component type="typeof(Advanced.Blazor.DepartmentList)" render-mode="Server" /> <!--DepartmentList uses the generic table template component-->
 <!-- This code commented out to demonstrate the Events blazor component-->
 @*@page "/pages/blazor"
     <script type="text/javascript">

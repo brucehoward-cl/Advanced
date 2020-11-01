@@ -2,7 +2,14 @@
 
 <h4 class="bg-primary text-white text-center p-2">People</h4>
 
-<component type="typeof(Advanced.Blazor.PeopleList)" render-mode="Server" />   <!-- Inserts the blazor component -->
+<!--<component type="typeof(Advanced.Blazor.PeopleList)" render-mode="Server" />-->   <!-- Inserts the blazor component -->
+
+<!--attributes configured as C# properties are used by prepending 'param-' to the name -->
+<!--<component type="typeof(Advanced.Blazor.PeopleList)" render-mode="Server" param-itemcount="5" param-selecttitle="@("Location")" />-->
+
+<component type="typeof(Advanced.Blazor.PeopleList)" render-mode="Server" /> <!--this is the generic template component-->
+
+
 @*<table class="table table-sm table-bordered table-striped">
         <thead>
             <tr>

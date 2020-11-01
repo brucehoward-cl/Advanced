@@ -1,52 +1,120 @@
-﻿<table class="table table-sm table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Dept</th>
-            <th>Location</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (Person p in People)
-        {
-            <tr class="@GetClass(p.Location.City)">
-                <td>@p.PersonId</td>
-                <td>@p.Surname, @p.Firstname</td>
-                <td>@p.Department.Name</td>
-                <td>@p.Location.City, @p.Location.State</td>
+﻿@*<table class="table table-sm table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Dept</th>
+                <th>Location</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (Person p in People)
+            {
+                <tr class="@GetClass(p.Location.City)">
+                    <td>@p.PersonId</td>
+                    <td>@p.Surname, @p.Firstname</td>
+                    <td>@p.Department.Name</td>
+                    <td>@p.Location.City, @p.Location.State</td>
+                </tr>
+            }
+        </tbody>
+    </table>*@ <!-- This structure was moved into TableTemplate-->
+<div></div>
 
-<div class="form-group">
-    <label for="city">City</label>
-    <select name="city" class="form-control" @bind="SelectedCity">
-        <option disabled selected>Select City</option>
-        @foreach (string city in Cities)
-        {
-            <option value="@city" selected="@(city == SelectedCity)">
-                @city
-            </option>
-        }
-    </select>
-</div>
+<TableTemplate RowType="Person" RowData="People" Highlight="@(p => p.Location.City)" SortDirection="@(p => p.Surname)">
+
+<!--<TableTemplate RowType="Person" RowData="People">--> <!--This is the generic template component-->
+    <Header>
+        <tr><th>ID</th><th>Name</th><th>Dept</th><th>Location</th></tr>
+    </Header>
+    <RowTemplate Context="p">
+        <td>@p.PersonId</td>
+        <td>@p.Surname, @p.Firstname</td>
+        <td>@p.Department.Name</td>
+        <td>@p.Location.City, @p.Location.State</td>
+    </RowTemplate>
+</TableTemplate>
+
+    @*<TableTemplate>    <!--TableTemplate provides the table structure, and PeopleList provides the detail -->
+            <Header>
+                <tr><th>ID</th><th>Name</th><th>Dept</th><th>Location</th></tr>
+            </Header>
+            <Body>
+                @foreach (Person p in People)
+                {
+                <tr class="@GetClass(p.Location.City)">
+                    <td>@p.PersonId</td>
+                    <td>@p.Surname, @p.Firstname</td>
+                    <td>@p.Department.Name</td>
+                    <td>@p.Location.City, @p.Location.State</td>
+                </tr>
+                }
+            </Body>
+        </TableTemplate>*@ <!-- replaced by the generic template component -->
+    <!--When a component is embedded in another component, the name becomes the element tag (Capitalization must match exactly)-->
+    <!--<SelectFilter values="@Cities" title="City" />--> <!--The properties configured with the [Parameter] attribute become HTML attributes-->
+    <!--<SelectFilter values="@Cities" title="City" autofocus="true" name="city" required="true" />--> <!--non matched attributes are caught-->
+    <!--<SelectFilter values="@Cities" title="@SelectTitle" />-->
+    <!--<SelectFilter values="@Cities" title="@SelectTitle" CustomEvent="@HandleCustom" />--> <!--handling an event raised in a child component-->
+    <!--<ThemeWrapper Theme="info" Title="Location Selector">-->    <!--how to display child html element content in a parent element-->
+    <!--<SelectFilter values="@Cities" title="@SelectTitle" @bind-SelectedValue="SelectedCity" />
+        <button class="btn btn-primary" @onclick="@(() => SelectedCity = "San Jose")">
+            Change
+        </button>
+    </ThemeWrapper>-->
+    <!--ThemeWrapper commented out to demonstrate generic template component-->
+    <!--<div class="form-group">
+        <label for="city">City</label>
+        <select name="city" class="form-control" @bind="SelectedCity">
+            <option disabled selected>Select City</option>
+            @foreach (string city in Cities)
+            {
+                <option value="@city" selected="@(city == SelectedCity)">
+                    @city
+                </option>
+            }
+        </select>
+    </div> -->
+    <!--The SelectFilter component replaces this-->
 
 
-@code {
-    [Inject]
-    public DataContext Context { get; set; }
-    
-    public IEnumerable<Person> People => Context.People.Include(p => p.Department)
-                                                       .Include(p => p.Location);
 
-    public IEnumerable<string> Cities => Context.Locations.Select(l => l.City);
-    
-    public string SelectedCity { get; set; }
-    
-    public string GetClass(string city) => SelectedCity == city ? "bg-info text-white" : "";
-}
+    @code {
+        #region This section used before generic template component added
+        //[Inject]
+        //public DataContext Context { get; set; }
+
+        //public IEnumerable<Person> People => Context.People.Include(p => p.Department)
+        //                                                    .Include(p => p.Location)
+        //                                                    .Take(ItemCount);
+
+        ////public IEnumerable<Person> People => Context.People.Include(p => p.Department)
+        ////                                               .Include(p => p.Location);
+
+        //public IEnumerable<string> Cities => Context.Locations.Select(l => l.City);
+
+        //public string SelectedCity { get; set; }
+
+        //public string GetClass(string city) => SelectedCity == city ? "bg-info text-white" : "";
+
+        //[Parameter]
+        //public int ItemCount { get; set; } = 4;
+        //[Parameter]
+        //public string SelectTitle { get; set; }
+
+        ////public void HandleCustom(string newValue)   //for handling the event raised in the child component
+        ////{
+        ////    SelectedCity = newValue;
+        ////} //commented out in order to use custom binding to bind to property in child component
+        #endregion
+
+        #region This section used with the generic template component (TableTemplate)
+        [Inject]
+        public DataContext Context { get; set; }
+        public IEnumerable<Person> People => Context.People.Include(p => p.Department)
+                                                           .Include(p => p.Location);
+        #endregion
+    }
 
 
 

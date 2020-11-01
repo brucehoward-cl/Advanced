@@ -1,0 +1,43 @@
+﻿<!--<div class="form-group">-->
+<div class="form-group p-2 bg-@Theme @TextColor()">
+    <label for="select-@Title">@Title</label>
+    <!--<select name="select-@Title" class="form-control" @bind="SelectedValue">-->
+    <!--<select name="select-@Title" class="form-control" @bind="SelectedValue" @attributes="Attrs">--> <!--For any attributes not matched, or attributes to be passed on to other components-->
+    <select name="select-@Title" class="form-control" @onchange="HandleSelect" value="@SelectedValue">
+        <option disabled selected>Select @Title</option>
+        @foreach (string val in Values)
+        {
+            <option value="@val" selected="@(val == SelectedValue)">
+                @val
+            </option>
+        }
+    </select>
+</div>
+
+@code {
+    [Parameter]  //Makes the property configurable
+    public IEnumerable<string> Values { get; set; } = Enumerable.Empty<string>();
+
+    [Parameter]
+    public string SelectedValue { get; set; }
+
+    [Parameter]
+    public string Title { get; set; } = "Placeholder";
+
+    [Parameter(CaptureUnmatchedValues = true)]  //The type must be Dictionary<string, object>
+    public Dictionary<string, object> Attrs { get; set; }
+
+    [Parameter]
+    //public EventCallback<string> CustomEvent { get; set; } //this attribute is used in the parent and points to the parent method
+    public EventCallback<string> SelectedValueChanged { get; set; } //used for the custom binding
+    public async Task HandleSelect(ChangeEventArgs e)
+    {
+        SelectedValue = e.Value as string;
+        //await CustomEvent.InvokeAsync(SelectedValue); // this invokes the method defined in the parent
+        await SelectedValueChanged.InvokeAsync(SelectedValue);   //used for the custom binding
+    }
+
+    [CascadingParameter(Name = "BgTheme")]
+    public string Theme { get; set; }
+    public string TextColor() => Theme == null ? "" : "text-white";
+}
