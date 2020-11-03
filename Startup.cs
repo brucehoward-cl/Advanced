@@ -34,6 +34,7 @@ namespace Advanced
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddServerSideBlazor();
+            services.AddSingleton<Services.ToggleService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,6 +48,7 @@ namespace Advanced
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
                 endpoints.MapBlazorHub();
+                endpoints.MapFallbackToPage("/_Host");  //sets _Host page as landing page for unmatched requests
             });
             SeedData.SeedDatabase(context);
         }

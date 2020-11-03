@@ -1,4 +1,7 @@
-﻿<CascadingValue Name="BgTheme" Value="Theme" IsFixed="false">
+﻿@page "/departments"
+@page "/depts"
+
+<CascadingValue Name="BgTheme" Value="Theme" IsFixed="false">
     <TableTemplate RowType="Department" RowData="Departments"
                    Highlight="@(d => d.Name)"
                    SortDirection="@(d => d.Name)">
@@ -18,7 +21,8 @@
 
 <SelectFilter Title="@("Theme")" Values="Themes" @bind-SelectedValue="Theme" />
 
-<button class="btn btn-danger" @onclick="@(() => throw new Exception())">Error</button>
+<!--<button class="btn btn-danger" @onclick="@(() => throw new Exception())">Error</button>--> <!--commented out when Blazor routing was added-->
+<button class="btn btn-primary" @onclick="HandleClick">People</button> <!-- example of programmatic routing -->
 
 @code {
     [Inject]
@@ -26,5 +30,11 @@
     public IEnumerable<Department> Departments => Context.Departments.Include(d => d.People)
                                                                         .ThenInclude(p => p.Location);
     public string Theme { get; set; } = "info"; //for the cascading value
-    public string[] Themes = new string[] { "primary", "info", "success" }; 
+    public string[] Themes = new string[] { "primary", "info", "success" };
+
+    #region Programmatic routing
+    [Inject]
+    public NavigationManager NavManager { get; set; }  //provided as a service; injected with the attribute
+    public void HandleClick() => NavManager.NavigateTo("/people"); 
+    #endregion
 }

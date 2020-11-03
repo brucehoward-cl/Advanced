@@ -1,40 +1,52 @@
-﻿@*<table class="table table-sm table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Dept</th>
-                <th>Location</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (Person p in People)
-            {
-                <tr class="@GetClass(p.Location.City)">
-                    <td>@p.PersonId</td>
-                    <td>@p.Surname, @p.Firstname</td>
-                    <td>@p.Department.Name</td>
-                    <td>@p.Location.City, @p.Location.State</td>
+﻿@page "/"
+@page "/people"
+    <!-- #region Table template HTML structure without using a blazor component -->
+    @*<table class="table table-sm table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Dept</th>
+                    <th>Location</th>
                 </tr>
-            }
-        </tbody>
-    </table>*@ <!-- This structure was moved into TableTemplate-->
-<div></div>
+            </thead>
+            <tbody>
+                @foreach (Person p in People)
+                {
+                    <tr class="@GetClass(p.Location.City)">
+                        <td>@p.PersonId</td>
+                        <td>@p.Surname, @p.Firstname</td>
+                        <td>@p.Department.Name</td>
+                        <td>@p.Location.City, @p.Location.State</td>
+                    </tr>
+                }
+            </tbody>
+        </table>*@ <!-- This structure was moved into TableTemplate-->
+    <!-- #endregion -->
+    <div></div>
 
-<TableTemplate RowType="Person" RowData="People" Highlight="@(p => p.Location.City)" SortDirection="@(p => p.Surname)">
+    <TableTemplate RowType="Person" RowData="People" Highlight="@(p => p.Location.City)" SortDirection="@(p => p.Surname)">
 
-<!--<TableTemplate RowType="Person" RowData="People">--> <!--This is the generic template component-->
-    <Header>
-        <tr><th>ID</th><th>Name</th><th>Dept</th><th>Location</th></tr>
-    </Header>
-    <RowTemplate Context="p">
-        <td>@p.PersonId</td>
-        <td>@p.Surname, @p.Firstname</td>
-        <td>@p.Department.Name</td>
-        <td>@p.Location.City, @p.Location.State</td>
-    </RowTemplate>
-</TableTemplate>
+        <!--<TableTemplate RowType="Person" RowData="People">--> <!--This is the generic template component-->
+        <Header>
+            <tr><th>ID</th><th>Name</th><th>Dept</th><th>Location</th>
+                                                     <td></td>
+            </tr>
+        </Header>
+        <RowTemplate Context="p">
+            <td>@p.PersonId</td>
+            <td>@p.Surname, @p.Firstname</td>
+            <td>@p.Department.Name</td>
+            <td>@p.Location.City, @p.Location.State</td>
+            <td>
+                <NavLink class="btn btn-sm btn-info" href="@GetEditUrl(p.PersonId)"> <!--have to use a method because razor expressions don't support static content and razor expressions in attribute values-->
+                    Edit
+                </NavLink>
+            </td>
+        </RowTemplate>
+    </TableTemplate>
 
+    <!-- #region Table Template HTML using a blazor (TableTemplate) component -->
     @*<TableTemplate>    <!--TableTemplate provides the table structure, and PeopleList provides the detail -->
             <Header>
                 <tr><th>ID</th><th>Name</th><th>Dept</th><th>Location</th></tr>
@@ -51,18 +63,28 @@
                 }
             </Body>
         </TableTemplate>*@ <!-- replaced by the generic template component -->
+    <!-- #endregion -->
+
+    <NavLink class="btn btn-primary" href="/depts">Departments</NavLink>
+
+
+    <!-- #region Various ways to embed the SelectFilter component without using a ThemeWrapper -->
     <!--When a component is embedded in another component, the name becomes the element tag (Capitalization must match exactly)-->
     <!--<SelectFilter values="@Cities" title="City" />--> <!--The properties configured with the [Parameter] attribute become HTML attributes-->
     <!--<SelectFilter values="@Cities" title="City" autofocus="true" name="city" required="true" />--> <!--non matched attributes are caught-->
     <!--<SelectFilter values="@Cities" title="@SelectTitle" />-->
     <!--<SelectFilter values="@Cities" title="@SelectTitle" CustomEvent="@HandleCustom" />--> <!--handling an event raised in a child component-->
+    <!-- #endregion -->
+    <!-- #region Using ThemeWrapper to illustrate complex parent child content sharing -->
     <!--<ThemeWrapper Theme="info" Title="Location Selector">-->    <!--how to display child html element content in a parent element-->
     <!--<SelectFilter values="@Cities" title="@SelectTitle" @bind-SelectedValue="SelectedCity" />
         <button class="btn btn-primary" @onclick="@(() => SelectedCity = "San Jose")">
             Change
         </button>
-    </ThemeWrapper>-->
-    <!--ThemeWrapper commented out to demonstrate generic template component-->
+    </ThemeWrapper>--><!--ThemeWrapper commented out to demonstrate generic template component-->
+    <!-- #endregion -->
+
+    <!-- #region The Select filter HTML without using a blazor component -->
     <!--<div class="form-group">
         <label for="city">City</label>
         <select name="city" class="form-control" @bind="SelectedCity">
@@ -76,6 +98,7 @@
         </select>
     </div> -->
     <!--The SelectFilter component replaces this-->
+    <!-- #endregion -->
 
 
 
@@ -114,6 +137,8 @@
         public IEnumerable<Person> People => Context.People.Include(p => p.Department)
                                                            .Include(p => p.Location);
         #endregion
+
+        public string GetEditUrl(long id) => $"/person/{id}"; //for handling the URL parameter
     }
 
 
